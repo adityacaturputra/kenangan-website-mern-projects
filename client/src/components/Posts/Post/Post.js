@@ -50,7 +50,7 @@ const Post = ({ post, setCurrentId }) => {
         {post.title}
       </Typography>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="body2" color="textSecondary" component="p">
           {post.message}
         </Typography>
       </CardContent>
@@ -63,8 +63,9 @@ const Post = ({ post, setCurrentId }) => {
             dispatch(likePost(post._id));
           }}
         >
+          {post.likeCount}&nbsp;
           <ThumbUpAltIcon fontSize="small" />
-          {`${post.likeCount} Like`}
+          &nbsp; Like
         </Button>
         {/* Delete Button */}
         <Button
