@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import { createPost } from "../../actions/posts";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../../actions/posts";
 import useStyles from "./styles";
 import FileBase64 from "react-file-base64";
-
-const Form = () => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
+const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
@@ -15,12 +12,30 @@ const Form = () => {
     tags: "",
     selectedFile: "",
   });
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (post) setPostData(post);
+    return () => {};
+  }, [post]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createPost(postData));
+
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+    } else {
+      dispatch(createPost(postData));
+    }
+    clear();
   };
-  const clear = (e) => {
-    e.preventDefault();
+
+  const clear = () => {
+    setCurrentId(null);
     setPostData({
       creator: "",
       title: "",
@@ -37,7 +52,9 @@ const Form = () => {
         className={`${classes.form} ${classes.root}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Buat Kenangan</Typography>
+        <Typography variant="h6">
+          {currentId ? "Edit" : "Buat"} Kenangan
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -101,7 +118,10 @@ const Form = () => {
             color="secondary"
             size="small"
             type="submit"
-            onClick={clear}
+            onClick={(e) => {
+              e.preventDefault();
+              clear();
+            }}
             fullWidth
           >
             Clear
