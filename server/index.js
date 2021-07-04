@@ -2,10 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
 
 import postsRoutes from "./routes/posts.js";
 
 const app = express();
+dotenv.config();
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -13,8 +15,7 @@ app.use(cors());
 
 app.use("/posts", postsRoutes);
 
-const CONNECTION_URL =
-  "mongodb://adityacaturputra:sqkAmfiERitQGuCT@cluster0-shard-00-00.reduu.mongodb.net:27017,cluster0-shard-00-01.reduu.mongodb.net:27017,cluster0-shard-00-02.reduu.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-wthpz8-shard-0&authSource=admin&retryWrites=true&w=majority";
+const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 5000;
 
 mongoose
