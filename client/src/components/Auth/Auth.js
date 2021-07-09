@@ -9,21 +9,39 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
+import { signin, signup } from "../../actions/auth";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Icon from "./Icon";
 import { GoogleLogin } from "react-google-login";
 import Input from "./Input";
-
 import useStyles from "./Styles";
+
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
-  const handleSubmit = () => {};
-  const handleChange = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isSignup) {
+      dispatch(signup(formData, history));
+    } else {
+      dispatch(signin(formData, history));
+    }
+  };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   const handleShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
   const switchMode = () => {
@@ -61,14 +79,14 @@ const Auth = () => {
                 <Input
                   name="firstName"
                   label="First Name"
-                  handleChange={handleChange}
+                  handlechange={handleChange}
                   autoFocus
                   half
                 />
                 <Input
                   name="lastName"
                   label="Last Name"
-                  handleChange={handleChange}
+                  handlechange={handleChange}
                   half
                 />
               </>
